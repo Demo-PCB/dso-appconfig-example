@@ -41,7 +41,7 @@ permissions:
 jobs:
   deploy-dev:
     name: Deploy to DEV
-    uses: ibkpe-platform-org/dso-appconfig-reusable/.github/workflows/_cd-appconfig-dev.yml@main
+    uses: armedinag/dso-appconfig-reusable/.github/workflows/_cd-appconfig-dev.yml@main
     with:
       application: 'dso'
       component-name: 'dso-appconfig-example'
