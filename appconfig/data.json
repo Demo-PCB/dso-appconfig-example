@@ -1,4 +1,4 @@
 {
   "ApiUrl": "https://api.example.com",
-  "NewFeature": true
+  "NewFeature": false
 }
