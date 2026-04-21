@@ -17,18 +17,18 @@
 name: CI - App Configuration
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - 'appconfig/data.json'
-      - 'appconfig/config.yml'
-  pull_request:
-    branches:
-      - main
-    paths:
-      - 'appconfig/data.json'
-      - 'appconfig/config.yml'
+#  push:
+#    branches:
+#      - main
+#    paths:
+#      - 'appconfig/data.json'
+#      - 'appconfig/config.yml'
+#  pull_request:
+#    branches:
+#      - main
+#    paths:
+#      - 'appconfig/data.json'
+#      - 'appconfig/config.yml'
   workflow_dispatch:
 
 # Prevent concurrent CI runs on the same branch
