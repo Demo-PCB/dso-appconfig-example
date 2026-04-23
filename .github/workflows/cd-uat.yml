@@ -27,7 +27,7 @@ on:
 
 # Prevent concurrent deployments to DEV
 concurrency:
-  group: cd-appconfig-dev
+  group: cd-appconfig-uat
   cancel-in-progress: false
 
 permissions:
@@ -40,7 +40,7 @@ permissions:
 
 jobs:
   deploy-dev:
-    name: Deploy to DEV
+    name: Deploy to UAT
     uses: armedinag/dso-appconfig-reusable/.github/workflows/_cd-appconfig-uat.yml@main
     with:
       application: 'dso'
