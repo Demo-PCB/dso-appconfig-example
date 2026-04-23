@@ -124,7 +124,7 @@ jobs:
         run: echo "UAT deployment approved"
 
   deploy-uat:
-    name: Deploy APP-CONFIGURATION to UAT
+    name: Deploy to UAT
     needs: [validate-ci, resolve-version, approve-uat]
     uses: armedinag/dso-appconfig-reusable/.github/workflows/_cd-appconfig-uat.yml@main
     with:
