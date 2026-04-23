@@ -34,6 +34,7 @@ on:
           - github
         default: artifactory
   workflow_run:
+    branches: [ main ]
 
 permissions:
   id-token: write    # Required for Azure OIDC and JFrog OIDC authentication
