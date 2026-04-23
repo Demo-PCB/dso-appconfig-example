@@ -5,7 +5,7 @@
 # Environment: uat
 # Protection: REQUIRES manual approval via GitHub Environment protection rules
 
-name: Deploy to UAT App Configuration
+name: CD - App Configuration (UAT)
 
 on:
   workflow_dispatch:
