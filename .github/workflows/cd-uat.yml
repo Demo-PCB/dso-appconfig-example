@@ -34,6 +34,8 @@ on:
           - github
         default: artifactory
   workflow_run:
+    workflows: [ 'CI - App Configuration' ]
+    types: [ completed ]
     branches: [ main ]
 
 permissions:
