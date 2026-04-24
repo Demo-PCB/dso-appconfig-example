@@ -121,10 +121,11 @@ jobs:
               --jq '.[0].tagName')
           
             # Fetches the tag name of the latest release
-            LATEST_TAG=$(gh release view --repo ${{ github.repository }} --json tagName --jq '.tagName')
+            # LATEST_TAG=$(gh release view --repo ${{ github.repository }} --json tagName --jq '.tagName')
             # echo "release_tag=$LATEST_TAG" >> $GITHUB_OUTPUT
-            # LATEST_TAG=${{ github.event.release.tag_name }} 
-            
+            # LATEST_TAG=${{ github.event.release.tag_name }}
+            echo "tag=$(git describe --tags --abbrev=0)" >> $GITHUB_OUTPUT 
+            LATEST=${{github.event.workflow_run.outputs.tag}}
             if [ -z "$LATEST_TAG" ] || [ "$LATEST_TAG" = "null" ]; then
               echo "::error::No releases found. Run CI on main first to publish an artifact."
               exit 1
