@@ -17,7 +17,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'Artifact version to deploy (leave empty to use latest from CI)'
+        description: 'Artifact version to deploy (leave empty to use latest from CD)'
         required: false
         type: string
         default: ''
