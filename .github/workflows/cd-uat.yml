@@ -122,7 +122,7 @@ jobs:
             echo "version=$INPUT_VERSION" >> "$GITHUB_OUTPUT"
           else
             echo "No version provided, resolving latest from CI..."
-            LATEST_TAG=${{ github.last_tag.outputs.tag }}
+            LATEST_TAG=${{ steps.last_tag.outputs.tag }}
             if [ -z "$LATEST_TAG" ]]; then
               echo "::error::No releases found. Run CI on main first to publish an artifact."
               exit 1
