@@ -109,8 +109,8 @@ jobs:
       - name: Get latest tag
         id: last_tag
         run: echo "tag=$(git describe --tags --abbrev=0)" >> $GITHUB_OUTPUT
-      - name: Consume value
-        run: echo "The result was ${{ steps.last_tag.outputs.tag }}"
+      - name: Last tag from git
+        run: echo "Last tag is ${{ steps.last_tag.outputs.tag }}"
       - name: Determine artifact version
         id: resolve
         env:
@@ -122,16 +122,17 @@ jobs:
             echo "version=$INPUT_VERSION" >> "$GITHUB_OUTPUT"
           else
             echo "No version provided, resolving latest from CI..."
-            LATEST_TAG=$(gh release list \
-              --repo "${{ github.repository }}" \
-              --limit 1 \
-              --json tagName \
-              --jq '.[0].tagName')
+#            LATEST_TAG=$(gh release list \
+#              --repo "${{ github.repository }}" \
+#              --limit 1 \
+#              --json tagName \
+#              --jq '.[0].tagName')
           
             # Fetches the tag name of the latest release
             # LATEST_TAG=$(gh release view --repo ${{ github.repository }} --json tagName --jq '.tagName')
             # echo "release_tag=$LATEST_TAG" >> $GITHUB_OUTPUT
             # LATEST_TAG=${{ github.event.release.tag_name }}
+            echo "Last tag is ${{ steps.last_tag.outputs.tag }}"   
             LATEST_TAG=${{ steps.last_tag.outputs.tag }}
             if [ -z "$LATEST_TAG" ] || [ "$LATEST_TAG" = "null" ]; then
               echo "::error::No releases found. Run CI on main first to publish an artifact."
