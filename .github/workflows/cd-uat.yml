@@ -58,6 +58,42 @@ permissions:
   security-events: write
 
 jobs:
+  # Validate that CI has completed successfully on main before deploying
+  validate-ci:
+    name: Validate CI Completion
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check latest CI run on main
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          echo "Checking latest CI workflow run on main branch..."
+          LATEST_CI=$(gh run list \
+            --repo "${{ github.repository }}" \
+            --workflow "CI - Build and Validate" \
+            --branch main \
+            --status completed \
+            --limit 1 \
+            --json conclusion,headSha,createdAt \
+            --jq '.[0]')
+          
+          if [ -z "$LATEST_CI" ] || [ "$LATEST_CI" = "null" ]; then
+            echo "::error::No completed CI runs found on main branch"
+            exit 1
+          fi
+          
+          CONCLUSION=$(echo "$LATEST_CI" | jq -r '.conclusion')
+          HEAD_SHA=$(echo "$LATEST_CI" | jq -r '.headSha')
+          CREATED_AT=$(echo "$LATEST_CI" | jq -r '.createdAt')
+          
+          echo "Latest CI run: conclusion=$CONCLUSION, sha=$HEAD_SHA, date=$CREATED_AT"
+          
+          if [ "$CONCLUSION" != "success" ]; then
+            echo "::error::Latest CI run on main did not succeed (conclusion: $CONCLUSION). Deploy aborted."
+            exit 1
+          fi
+          
+          echo "CI validation passed - latest run on main was successful"
   deploy-uat:
     name: Deploy to UAT
     #needs: [validate-ci, resolve-version, approve-uat]
