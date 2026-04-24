@@ -144,14 +144,14 @@ jobs:
     needs: [validate-ci, resolve-version, approve-uat]
     uses: armedinag/dso-appconfig-reusable/.github/workflows/_cd-appconfig-uat.yml@main
     with:
-      environment: uat
+      #environment: uat
       version: ${{ needs.resolve-version.outputs.version }}
       component-name: dso-appconfig-example
-      dry-run: ${{ inputs.dry-run || false }}
-      force-update: ${{ inputs.force-update || false }}
-      package-registry: ${{ inputs.package-registry || 'artifactory' }}
-      artifactory-repository: dso-generic-release-local
-      policy-enabled: true
+      #dry-run: ${{ inputs.dry-run || false }}
+      #force-update: ${{ inputs.force-update || false }}
+      #package-registry: ${{ inputs.package-registry || 'artifactory' }}
+      #artifactory-repository: dso-generic-release-local
+      #policy-enabled: true
       application: 'dso-appconfig-example'
     secrets:
       DSO_WORKFLOWS_GHAPP_ID: ${{ secrets.DSO_WORKFLOWS_GHAPP_ID }}
