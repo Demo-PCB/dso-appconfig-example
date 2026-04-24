@@ -132,21 +132,30 @@ jobs:
             echo "Resolved latest version from CI: $VERSION (tag: $LATEST_TAG)"
             echo "version=$VERSION" >> "$GITHUB_OUTPUT"
           fi
-#  deploy-uat:
-#    name: Deploy to UAT
-#    #needs: [validate-ci, resolve-version, approve-uat]
-#    uses: armedinag/dso-appconfig-reusable/.github/workflows/_cd-appconfig-uat.yml@main
-#    with:
-#      environment: uat
-#      variables-path: .github/variables
-#      artifact-version: ${{ needs.resolve-version.outputs.version }}
-#      component-name: dso-appconfig-example
-#      dry-run: ${{ inputs.dry-run || false }}
-#      force-update: ${{ inputs.force-update || false }}
-#      package-registry: ${{ inputs.package-registry || 'artifactory' }}
-#      artifactory-repository: dso-generic-release-local
-#      policy-enabled: true
-#    secrets:
-#      DSO_WORKFLOWS_GHAPP_ID: ${{ secrets.DSO_WORKFLOWS_GHAPP_ID }}
-#      DSO_WORKFLOWS_GHAPP_PK: ${{ secrets.DSO_WORKFLOWS_GHAPP_PK }}
-#      ARTIFACTORY_TOKEN: ${{ secrets.ARTIFACTORY_TOKEN }}
+   #Approval gate: waits for manual approval before deploying
+  approve-uat:
+    name: Approve UAT Deployment
+    runs-on: ubuntu-latest
+    needs: [validate-ci, resolve-version]
+    environment: uat
+    steps:
+      - name: Deployment approved
+        run: echo "UAT deployment approved"
+  deploy-uat:
+    name: Deploy to UAT
+    needs: [validate-ci, resolve-version, approve-uat]
+    uses: armedinag/dso-appconfig-reusable/.github/workflows/_cd-appconfig-uat.yml@main
+    with:
+      environment: uat
+      variables-path: .github/variables
+      artifact-version: ${{ needs.resolve-version.outputs.version }}
+      component-name: dso-appconfig-example
+      dry-run: ${{ inputs.dry-run || false }}
+      force-update: ${{ inputs.force-update || false }}
+      package-registry: ${{ inputs.package-registry || 'artifactory' }}
+      artifactory-repository: dso-generic-release-local
+      policy-enabled: true
+    secrets:
+      DSO_WORKFLOWS_GHAPP_ID: ${{ secrets.DSO_WORKFLOWS_GHAPP_ID }}
+      DSO_WORKFLOWS_GHAPP_PK: ${{ secrets.DSO_WORKFLOWS_GHAPP_PK }}
+      ARTIFACTORY_TOKEN: ${{ secrets.ARTIFACTORY_TOKEN }}
