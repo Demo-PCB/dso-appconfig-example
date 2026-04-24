@@ -119,7 +119,9 @@ jobs:
               --limit 1 \
               --json tagName \
               --jq '.[0].tagName')
-
+            
+            echo "version=$LATEST_TAG"
+            
             if [ -z "$LATEST_TAG" ] || [ "$LATEST_TAG" = "null" ]; then
               echo "::error::No releases found. Run CI on main first to publish an artifact."
               exit 1
