@@ -101,7 +101,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: validate-ci
     outputs:
-      version: ${{ steps.resolve.outputs.version }}
+      artifact-version: ${{ steps.resolve.outputs.version }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -147,7 +147,7 @@ jobs:
       component-name: 'dso-appconfig-example'
 
       # Required: Version to deploy (from workflow_dispatch input or CI artifact)
-      version: ${{ github.event.inputs.version || needs.resolve-version.outputs.version }}
+      version: ${{ github.event.inputs.version || needs.resolve-version.outputs.artifact-version }}
 
       # Optional: Component name (defaults to repository name)
       # component-name: 'my-component'
