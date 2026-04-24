@@ -155,18 +155,10 @@ jobs:
       # Optional: Content type for values (default: 'application/json')
       # content-type: 'application/json'
 
-      # Optional: Label for configuration keys
-      # label: 'dev'
-
-      # Optional: Prefix for all imported keys
-      # prefix: 'MyApp/'
-
-      # Optional: Separator for flattening nested JSON (default: ':')
-      # separator: ':'
-
       # Optional: Perform dry run only without actual import (default: false)
       # FLAG_DRY_RUN_ONLY: false
 
       # Optional: Azure auth mode ('OIDC' default or 'IDENTITY' for managed identity on self-hosted Azure runner)
       # azure-auth-type: 'IDENTITY'
+
     secrets: inherit
