@@ -110,7 +110,7 @@ jobs:
         id: last_tag
         run: echo "tag=$(git describe --tags --abbrev=0)" >> $GITHUB_OUTPUT
       - name: Consume value
-        run: echo "The result was ${{ steps.last_tag.outputs.tag }}"
+        run: echo "Lastest version is ${{ steps.last_tag.outputs.tag }}"
       - name: Determine artifact version
         id: resolve
         env:
@@ -127,7 +127,7 @@ jobs:
               echo "::error::No releases found. Run CI on main first to publish an artifact."
               exit 1
             fi
-
+            echo "Lastest version is $LATEST_TAG"
             echo "version=$LATEST_TAG" >> "$GITHUB_OUTPUT"
           fi
     # Approval gate: waits for manual approval before deploying
