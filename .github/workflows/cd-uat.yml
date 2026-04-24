@@ -109,7 +109,8 @@ jobs:
       - name: Get latest tag
         id: last_tag
         run: echo "tag=$(git describe --tags --abbrev=0)" >> $GITHUB_OUTPUT
-
+      - name: Consume value
+        run: echo "The result was ${{ steps.last_tag.outputs.tag }}"
       - name: Determine artifact version
         id: resolve
         env:
