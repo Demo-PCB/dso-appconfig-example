@@ -154,6 +154,4 @@ jobs:
       #policy-enabled: true
       application: 'dso-appconfig-example'
     secrets:
-      DSO_WORKFLOWS_GHAPP_ID: ${{ secrets.DSO_WORKFLOWS_GHAPP_ID }}
-      DSO_WORKFLOWS_GHAPP_PK: ${{ secrets.DSO_WORKFLOWS_GHAPP_PK }}
-      DSO_ARTIFACTORY_TOKEN: ${{ secrets.DSO_ARTIFACTORY_TOKEN }}
+      secrets: inherit
