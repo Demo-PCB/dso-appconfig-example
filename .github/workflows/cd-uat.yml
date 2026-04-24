@@ -122,11 +122,6 @@ jobs:
             echo "version=$INPUT_VERSION" >> "$GITHUB_OUTPUT"
           else
             echo "No version provided, resolving latest from CI..."
-          
-            # Fetches the tag name of the latest release
-            # LATEST_TAG=$(gh release view --repo ${{ github.repository }} --json tagName --jq '.tagName')
-            # echo "release_tag=$LATEST_TAG" >> $GITHUB_OUTPUT
-            # LATEST_TAG=${{ github.event.release.tag_name }}
             LATEST_TAG=${{ github.last_tag.outputs.tag }}
             if [ -z "$LATEST_TAG" ] || [ "$LATEST_TAG" = "null" ]; then
               echo "::error::No releases found. Run CI on main first to publish an artifact."
