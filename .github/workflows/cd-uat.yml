@@ -16,10 +16,29 @@ name: CD - App Configuration (UAT)
 on:
   workflow_dispatch:
     inputs:
-      version:
-        description: 'Artifact version to deploy (e.g., 1.0.0-42 from CI job summary)'
+      artifact-version:
+        description: 'Artifact version to deploy (leave empty to use latest from CI)'
         required: false
         type: string
+        default: ''
+      dry-run:
+        description: 'Validate without deploying (dry-run mode)'
+        required: false
+        type: boolean
+        default: false
+      force-update:
+        description: 'Force update even if version already deployed'
+        required: false
+        type: boolean
+        default: false
+      package-registry:
+        description: 'Package registry (github or artifactory)'
+        required: false
+        type: choice
+        options:
+          - artifactory
+          - github
+        default: artifactory
   workflow_run:
     workflows: ['CI - App Configuration']
     types: [completed]
