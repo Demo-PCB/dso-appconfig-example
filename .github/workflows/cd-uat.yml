@@ -133,17 +133,17 @@ jobs:
             echo "version=$VERSION" >> "$GITHUB_OUTPUT"
           fi
    #Approval gate: waits for manual approval before deploying
-  approve-uat:
-    name: Approve UAT Deployment
-    runs-on: ubuntu-latest
-    needs: [validate-ci, resolve-version]
-    environment: uat
-    steps:
-      - name: Deployment approved
-        run: echo "UAT deployment approved"
+#  approve-uat:
+#    name: Approve UAT Deployment
+#    runs-on: ubuntu-latest
+#    needs: [validate-ci, resolve-version]
+#    environment: uat
+#    steps:
+#      - name: Deployment approved
+#        run: echo "UAT deployment approved"
   deploy-uat:
     name: Deploy to UAT
-    needs: [validate-ci, resolve-version, approve-uat]
+    needs: [validate-ci, resolve-version]
     uses: armedinag/dso-appconfig-reusable/.github/workflows/_cd-appconfig-uat.yml@main
     with:
       environment: uat
