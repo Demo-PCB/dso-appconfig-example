@@ -122,11 +122,11 @@ jobs:
             echo "version=$INPUT_VERSION" >> "$GITHUB_OUTPUT"
           else
             echo "No version provided, resolving latest from CI..."
-#            LATEST_TAG=$(gh release list \
-#              --repo "${{ github.repository }}" \
-#              --limit 1 \
-#              --json tagName \
-#              --jq '.[0].tagName')
+            #            LATEST_TAG=$(gh release list \
+            #              --repo "${{ github.repository }}" \
+            #              --limit 1 \
+            #              --json tagName \
+            #              --jq '.[0].tagName')
           
             # Fetches the tag name of the latest release
             # LATEST_TAG=$(gh release view --repo ${{ github.repository }} --json tagName --jq '.tagName')
