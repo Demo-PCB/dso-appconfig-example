@@ -140,18 +140,33 @@ jobs:
       - name: Deployment approved
         run: echo "UAT deployment approved"
   deploy-uat:
-    name: Deploy to UAT
-    needs: [validate-ci, resolve-version, approve-uat]
+    name: Deploy to DEV
     uses: armedinag/dso-appconfig-reusable/.github/workflows/_cd-appconfig-uat.yml@main
     with:
-      #environment: uat
-      version: ${{ needs.resolve-version.outputs.version }}
-      component-name: dso-appconfig-example
-      #dry-run: ${{ inputs.dry-run || false }}
-      #force-update: ${{ inputs.force-update || false }}
-      #package-registry: ${{ inputs.package-registry || 'artifactory' }}
-      #artifactory-repository: dso-generic-release-local
-      #policy-enabled: true
-      application: 'dso-appconfig-example'
-    secrets:
-      secrets: inherit
+      application: 'dso'
+      component-name: 'dso-appconfig-example'
+
+      # Required: Version to deploy (from workflow_dispatch input or CI artifact)
+      version: ${{ github.event.inputs.version || github.event.workflow_run.outputs.artifact_version }}
+
+      # Optional: Component name (defaults to repository name)
+      # component-name: 'my-component'
+
+      # Optional: Content type for values (default: 'application/json')
+      # content-type: 'application/json'
+
+      # Optional: Label for configuration keys
+      # label: 'dev'
+
+      # Optional: Prefix for all imported keys
+      # prefix: 'MyApp/'
+
+      # Optional: Separator for flattening nested JSON (default: ':')
+      # separator: ':'
+
+      # Optional: Perform dry run only without actual import (default: false)
+      # FLAG_DRY_RUN_ONLY: false
+
+      # Optional: Azure auth mode ('OIDC' default or 'IDENTITY' for managed identity on self-hosted Azure runner)
+      # azure-auth-type: 'IDENTITY'
+    secrets: inherit
