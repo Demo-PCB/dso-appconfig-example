@@ -109,8 +109,6 @@ jobs:
       - name: Get latest tag
         id: last_tag
         run: echo "tag=$(git describe --tags --abbrev=0)" >> $GITHUB_OUTPUT
-      - name: Consume value
-        run: echo "Lastest version is ${{ steps.last_tag.outputs.tag }}"
       - name: Determine artifact version
         id: resolve
         env:
@@ -147,7 +145,7 @@ jobs:
       component-name: 'dso-appconfig-example'
 
       # Required: Version to deploy (from workflow_dispatch input or CI artifact)
-      version: ${{ github.event.inputs.version || needs.resolve-version.outputs.artifact-version }}
+      version: ${{ needs.resolve-version.outputs.artifact-version }}
 
       # Optional: Component name (defaults to repository name)
       # component-name: 'my-component'
