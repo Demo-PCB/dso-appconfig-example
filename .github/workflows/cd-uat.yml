@@ -16,7 +16,7 @@ name: CD - App Configuration (UAT)
 on:
   workflow_dispatch:
     inputs:
-      artifact-version:
+      version:
         description: 'Artifact version to deploy (leave empty to use latest from CI)'
         required: false
         type: string
