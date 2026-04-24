@@ -128,10 +128,7 @@ jobs:
               exit 1
             fi
 
-            # Strip 'v' prefix from tag (e.g., v1.0.0-42 -> 1.0.0-42)
-            VERSION="${LATEST_TAG#v}"
-            echo "Resolved latest version from CI: $VERSION (tag: $LATEST_TAG)"
-            echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+            echo "version=$LATEST_TAG" >> "$GITHUB_OUTPUT"
           fi
     # Approval gate: waits for manual approval before deploying
   approve-uat:
