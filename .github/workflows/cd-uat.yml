@@ -94,6 +94,42 @@ jobs:
           fi
           
           echo "CI validation passed - latest run on main was successful"
+
+    # Resolve artifact version: use input if provided, otherwise latest GitHub Release from CI
+    resolve-version:
+      name: Resolve Artifact Version
+      runs-on: ubuntu-latest
+      needs: validate-ci
+      outputs:
+        artifact-version: ${{ steps.resolve.outputs.version }}
+      steps:
+        - name: Determine artifact version
+          id: resolve
+          env:
+            GH_TOKEN: ${{ github.token }}
+          run: |
+            INPUT_VERSION="${{ inputs.artifact-version }}"
+            if [ -n "$INPUT_VERSION" ]; then
+              echo "Using provided version: $INPUT_VERSION"
+              echo "version=$INPUT_VERSION" >> "$GITHUB_OUTPUT"
+            else
+              echo "No version provided, resolving latest from CI..."
+              LATEST_TAG=$(gh release list \
+                --repo "${{ github.repository }}" \
+                --limit 1 \
+                --json tagName \
+                --jq '.[0].tagName')
+
+              if [ -z "$LATEST_TAG" ] || [ "$LATEST_TAG" = "null" ]; then
+                echo "::error::No releases found. Run CI on main first to publish an artifact."
+                exit 1
+              fi
+
+              # Strip 'v' prefix from tag (e.g., v1.0.0-42 -> 1.0.0-42)
+              VERSION="${LATEST_TAG#v}"
+              echo "Resolved latest version from CI: $VERSION (tag: $LATEST_TAG)"
+              echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+            fi
 #  deploy-uat:
 #    name: Deploy to UAT
 #    #needs: [validate-ci, resolve-version, approve-uat]
