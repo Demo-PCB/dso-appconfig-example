@@ -140,7 +140,7 @@ jobs:
       - name: Deployment approved
         run: echo "UAT deployment approved"
   deploy-uat:
-    name: Deploy to DEV
+    name: Deploy to UAT
     uses: armedinag/dso-appconfig-reusable/.github/workflows/_cd-appconfig-uat.yml@main
     with:
       application: 'dso'
