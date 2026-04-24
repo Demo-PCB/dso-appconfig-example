@@ -115,10 +115,11 @@ jobs:
           else
             echo "No version provided, resolving latest from CI..."
             LATEST_TAG=$(gh release list \
-              --repo "${{ github.repository }}" \
-              --limit 1 \
-              --json tagName \
-              --jq '.[0].tagName')
+              --repo "${{ github.repository }}" 
+             # --limit 1 \
+             # --json tagName \
+             # --jq '.[0].tagName'
+          )
             
             echo "version=$LATEST_TAG"
             
