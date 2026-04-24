@@ -103,6 +103,9 @@ jobs:
     outputs:
       artifact-version: ${{ steps.resolve.outputs.version }}
     steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - name: Get latest tag
         id: last_tag
         run: echo "tag=$(git describe --tags --abbrev=0)" >> $GITHUB_OUTPUT
