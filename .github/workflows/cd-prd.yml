@@ -16,7 +16,7 @@ name: CD - App Configuration (PRD)
 on:
   workflow_dispatch:
     inputs:
-      version:
+      artifact-version:
         description: 'Artifact version to deploy (leave empty to use latest from CD)'
         required: false
         type: string
@@ -145,8 +145,10 @@ jobs:
       application: 'dso'
       component-name: 'dso-appconfig-example'
 
-      # Required: Version to deploy (from workflow_dispatch input or CI artifact)
       version: ${{ needs.resolve-version.outputs.artifact-version }}
+
+      # Required: Version to deploy (from workflow_dispatch input or CI artifact)
+      artifact-version: ${{ needs.resolve-version.outputs.artifact-version }}
 
       # Optional: Component name (defaults to repository name)
       # component-name: 'my-component'
