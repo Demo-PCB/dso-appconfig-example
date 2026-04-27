@@ -77,7 +77,6 @@ jobs:
             --json conclusion,headSha,createdAt \
             --jq '.[0]')
           
-          echo "last CI: $LATEST_CI"
           if [ -z "$LATEST_CI" ] || [ "$LATEST_CI" = "null" ]; then
             echo "::error::No completed CI runs found on main branch"
             exit 1

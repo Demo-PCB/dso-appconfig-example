@@ -4,3 +4,5 @@ dev:
   resourceName: ibk-secret-id
 uat:
   resourceName: ibk-secret-id
+prd:
+  resourceName: ibk-secret-id
