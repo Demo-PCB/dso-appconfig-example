@@ -1,0 +1,68 @@
+# =====================================================
+# Caller Workflow: CD DEV - Azure App Configuration
+# =====================================================
+# Deploys configuration to the DEV environment.
+# Triggers:
+# 1. Automatically when CI workflow completes successfully on main branch
+# 2. Manual trigger via workflow_dispatch with specified version
+#
+# Prerequisites:
+# - CI workflow must have run and published artifacts
+# - Azure OIDC credentials configured for DEV environment
+# =====================================================
+
+name: Rollback App Configuration Prev
+
+on:
+  workflow_dispatch:
+    inputs:
+      artifact-version:
+        description: 'Artifact version to rollback '
+        required: false
+        type: string
+        default: ''
+      environment:
+        description: "Rollback Environment"
+        required: true
+        type: choice
+        options:
+          - dev
+          - uat
+
+permissions:
+  id-token: write     # Required for OIDC
+  contents: read
+
+jobs:
+  rollback:
+    name: Rollback Deployment
+    uses: armedinag/dso-appconfig-reusable/.github/workflows/_appconfig-rollback.yml@main
+    with:
+      application: 'dso'
+      component-name: 'dso-appconfig-example'
+
+      # Required: Version to deploy (from workflow_dispatch input or CI artifact)
+      version: ${{ github.event.inputs.artifact_version }}
+
+      # Optional: Component name (defaults to repository name)
+      # component-name: 'my-component'
+
+      # Optional: Content type for values (default: 'application/json')
+      # content-type: 'application/json'
+
+      # Optional: Label for configuration keys
+      # label: 'dev'
+
+      # Optional: Prefix for all imported keys
+      # prefix: 'MyApp/'
+
+      # Optional: Separator for flattening nested JSON (default: ':')
+      # separator: ':'
+
+      # Optional: Perform dry run only without actual import (default: false)
+      # FLAG_DRY_RUN_ONLY: false
+
+      # Optional: Azure auth mode ('OIDC' default or 'IDENTITY' for managed identity on self-hosted Azure runner)
+      # azure-auth-type: 'IDENTITY'
+      environment: ${{ github.event.inputs.enviroment }}
+    secrets: inherit
