@@ -17,7 +17,7 @@ on:
   workflow_dispatch:
     inputs:
       artifact-version:
-        description: 'Artifact version to rollback '
+        description: 'Artifact version to rollback'
         required: false
         type: string
         default: ''
