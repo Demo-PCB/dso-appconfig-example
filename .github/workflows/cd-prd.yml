@@ -1,0 +1,163 @@
+# =====================================================
+# Caller Workflow: CD DEV - Azure App Configuration
+# =====================================================
+# Deploys configuration to the DEV environment.
+# Triggers:
+# 1. Automatically when CI workflow completes successfully on main branch
+# 2. Manual trigger via workflow_dispatch with specified version
+#
+# Prerequisites:
+# - CI workflow must have run and published artifacts
+# - Azure OIDC credentials configured for DEV environment
+# =====================================================
+
+name: CD - App Configuration (PRD)
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Artifact version to deploy (leave empty to use latest from CD)'
+        required: false
+        type: string
+        default: ''
+      dry-run:
+        description: 'Validate without deploying (dry-run mode)'
+        required: false
+        type: boolean
+        default: false
+      force-update:
+        description: 'Force update even if version already deployed'
+        required: false
+        type: boolean
+        default: false
+      package-registry:
+        description: 'Package registry (github or artifactory)'
+        required: false
+        type: choice
+        options:
+          - artifactory
+          - github
+        default: artifactory
+  workflow_run:
+    workflows: ['CI - App Configuration']
+    types: [completed]
+    branches: [main]
+
+# Prevent concurrent deployments to DEV
+concurrency:
+  group: cd-appconfig-prd
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  id-token: write
+  attestations: write
+  issues: write
+  actions: write
+  security-events: write
+
+jobs:
+  # Validate that CI has completed successfully on main before deploying
+  validate-ci:
+    name: Validate CI Completion
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check latest CI run on main
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          echo "Checking latest CI workflow run on main branch..."
+          LATEST_CI=$(gh run list \
+            --repo "${{ github.repository }}" \
+            --workflow "CI - App Configuration" \
+            --branch main \
+            --status completed \
+            --limit 1 \
+            --json conclusion,headSha,createdAt \
+            --jq '.[0]')
+          
+          if [ -z "$LATEST_CI" ] || [ "$LATEST_CI" = "null" ]; then
+            echo "::error::No completed CI runs found on main branch"
+            exit 1
+          fi
+          
+          CONCLUSION=$(echo "$LATEST_CI" | jq -r '.conclusion')
+          HEAD_SHA=$(echo "$LATEST_CI" | jq -r '.headSha')
+          CREATED_AT=$(echo "$LATEST_CI" | jq -r '.createdAt')
+          
+          echo "Latest CI run: conclusion=$CONCLUSION, sha=$HEAD_SHA, date=$CREATED_AT"
+          
+          if [ "$CONCLUSION" != "success" ]; then
+            echo "::error::Latest CI run on main did not succeed (conclusion: $CONCLUSION). Deploy aborted."
+            exit 1
+          fi
+          
+          echo "CI validation passed - latest run on main was successful"
+
+  # Resolve artifact version: use input if provided, otherwise latest GitHub Release from CI
+  resolve-version:
+    name: Resolve Artifact Version
+    runs-on: ubuntu-latest
+    needs: validate-ci
+    outputs:
+      artifact-version: ${{ steps.resolve.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Get latest tag
+        id: last_tag
+        run: echo "tag=$(git describe --tags --abbrev=0)" >> $GITHUB_OUTPUT
+      - name: Determine artifact version
+        id: resolve
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          INPUT_VERSION="${{ inputs.version }}"
+          if [ -n "$INPUT_VERSION" ]; then
+            echo "Using provided version: $INPUT_VERSION"
+            echo "version=$INPUT_VERSION" >> "$GITHUB_OUTPUT"
+          else
+            echo "No version provided, resolving latest from CI..."
+            LATEST_TAG=${{ steps.last_tag.outputs.tag }}
+            if [ -z "$LATEST_TAG" ]]; then
+              echo "::error::No releases found. Run CI on main first to publish an artifact."
+              exit 1
+            fi
+            echo "Lastest version is $LATEST_TAG"
+            echo "version=$LATEST_TAG" >> "$GITHUB_OUTPUT"
+          fi
+    # Approval gate: waits for manual approval before deploying
+  approve-prd:
+    name: Approve PRD Deployment
+    runs-on: ubuntu-latest
+    needs: [validate-ci, resolve-version]
+    environment: prd
+    steps:
+      - name: Deployment approved
+        run: echo "PRD deployment approved"
+  deploy-prd:
+    name: Deploy to PRD
+    needs: [validate-ci, resolve-version, approve-prd]
+    uses: armedinag/dso-appconfig-reusable/.github/workflows/_cd-appconfig-prd.yml@main
+    with:
+      application: 'dso'
+      component-name: 'dso-appconfig-example'
+
+      # Required: Version to deploy (from workflow_dispatch input or CI artifact)
+      version: ${{ needs.resolve-version.outputs.artifact-version }}
+
+      # Optional: Component name (defaults to repository name)
+      # component-name: 'my-component'
+
+      # Optional: Content type for values (default: 'application/json')
+      # content-type: 'application/json'
+
+      # Optional: Perform dry run only without actual import (default: false)
+      # FLAG_DRY_RUN_ONLY: false
+
+      # Optional: Azure auth mode ('OIDC' default or 'IDENTITY' for managed identity on self-hosted Azure runner)
+      # azure-auth-type: 'IDENTITY'
+
+    secrets: inherit
