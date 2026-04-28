@@ -42,7 +42,7 @@ jobs:
       component-name: 'dso-appconfig-example'
 
       # Required: Version to deploy (from workflow_dispatch input or CI artifact)
-      version: ${{ github.event.inputs.artifact_version }}
+      version: ${{ github.event.inputs.artifact-version }}
 
       # Optional: Component name (defaults to repository name)
       # component-name: 'my-component'
