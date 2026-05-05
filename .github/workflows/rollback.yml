@@ -24,11 +24,7 @@ on:
       environment:
         description: "Rollback Environment"
         required: true
-        type: choice
-        default: 'dev'
-        options:
-          - dev
-          - uat
+        type: environment
 
 permissions:
   id-token: write     # Required for OIDC
@@ -65,5 +61,6 @@ jobs:
 
       # Optional: Azure auth mode ('OIDC' default or 'IDENTITY' for managed identity on self-hosted Azure runner)
       # azure-auth-type: 'IDENTITY'
+
       environment: ${{ github.event.inputs.enviroment }}
     secrets: inherit
