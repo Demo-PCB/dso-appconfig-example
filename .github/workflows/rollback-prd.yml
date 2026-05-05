@@ -57,6 +57,4 @@ jobs:
 
       # Optional: Azure auth mode ('OIDC' default or 'IDENTITY' for managed identity on self-hosted Azure runner)
       # azure-auth-type: 'IDENTITY'
-
-      environment: prd
     secrets: inherit
