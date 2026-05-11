@@ -67,4 +67,5 @@ jobs:
       
       # Optional: Enable/disable publishing to Artifactory (default: true)
       FLAG_PUBLISH_ARTIFACTS: true
+      artifactory-url: ${{ vars.IBK_ARTIFACTORY_URL }}
     secrets: inherit
