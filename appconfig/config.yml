@@ -1,8 +1,17 @@
 version: 1.0.0
 
+# dev:
+#   resourceName: ibk-secret-id
+# uat:
+#   resourceName: ibk-secret-id
+# prd:
+#   resourceName: ibk-secret-id
+
 dev:
-  resourceName: ibk-secret-id
+  resourceName: APP-Con-devsecops-carlos
+
 uat:
-  resourceName: ibk-secret-id
+  resourceName: APP-Con-devsecops-carlos-uatt
+
 prd:
-  resourceName: ibk-secret-id
+  resourceName: APP-Con-devsecops-carlos-prdd
