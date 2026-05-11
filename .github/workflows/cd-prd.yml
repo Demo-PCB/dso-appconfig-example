@@ -140,7 +140,7 @@ jobs:
   deploy-prd:
     name: Deploy to PRD
     needs: [validate-ci, resolve-version, approve-prd]
-    uses: armedinag/dso-appconfig-reusable/.github/workflows/_cd-appconfig-prd.yml@main
+    uses: Demo-PCB/dso-appconfig-reusable/.github/workflows/_cd-appconfig-prd.yml@main
     with:
       application: 'dso'
       component-name: 'dso-appconfig-example'
