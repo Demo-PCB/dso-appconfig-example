@@ -66,5 +66,5 @@ jobs:
       # FLAG_RUN_SECRET_SCAN: true
       
       # Optional: Enable/disable publishing to Artifactory (default: true)
-      # FLAG_PUBLISH_ARTIFACTS: true
+      FLAG_PUBLISH_ARTIFACTS: false
     secrets: inherit
